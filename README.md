@@ -1,4 +1,4 @@
-# oui
-OUI Tool
+# ouisearch
+OUI Search Tool
 
-A Python cmdline and module for doing OUI (MA-L,M,S and CID Lookups)
+A Python command line tool and module for doing OUI (MA-L,M,S and CID Lookups) with caching
