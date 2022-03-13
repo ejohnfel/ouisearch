@@ -1,6 +1,6 @@
 PACKAGE=ouisearch
 CODE=oui.py
-SRC=src/$(CODE)
+SRC=$(CODE)
 CHEATTARGET=/usr/lib/python3.8
 VENV=tests
 PLATFORM=linux
@@ -34,9 +34,6 @@ else
 	$(VENV)\Scripts\activate
 endif
 
-clean:
-	@test -d dist && rm -fR dist
-
 cheatinstall:
 	@sudo cp $(SRC) $(CHEATTARGET)/$(CODE)
 	@sudo chmod +rx $(CHEATTARGET)/$(CODE)
@@ -58,6 +55,9 @@ else
 	@py -m pip install .
 endif
 
+clean:
+	@test -d dist && rm -fR dist || true
+	@test -d $(PACKAGE).egg-info && rm -fR $(PACKAGE).egg-info || true
 install:
 ifeq ($(PLATFORM),linux)
 	python3 -m pip install $(PACKAGE)
@@ -99,6 +99,5 @@ actions:
 	@printf "installreq\tInstall with requirements file\n"
 	@printf "installuser\tInstall for current user only\n"
 	@printf "upgrade\t\tUpgrade the package\n"
-	@printf "actions\t\tThis list\n"
-	@printf "cheatinstall\tDo the cp /usr/lib thing\n"
-	@printf "clean\t\tClean build dist\n"
+	@printf "cheatinstall\tDo the cheat cp /usr/lib thing\n"
+	@printf "clean\t\tRemove build dist\n"
