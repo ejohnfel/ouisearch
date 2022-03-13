@@ -1,7 +1,9 @@
 PACKAGE=ouisearch
+EPACKAGE=ouisearch
 CODE=oui.py
 SRC=$(CODE)
-CHEATTARGET=/usr/lib/python3.8
+PYTHONTARGET=python3.8
+CHEATTARGET=/usr/lib/$(PYTHONTARGET)
 VENV=tests
 PLATFORM=linux
 RECFILE=requirements.txt
@@ -42,49 +44,50 @@ cheatrm:
 	@test -f $(CHEATTARGET)/$(CODE) && sudo cp $(SRC) $(CHEATTARGET)/$(CODE) || true
 
 install_test:
-	@python3 -m pip install --index-url https://test.pypi.org/simple --no-deps $(PACKAGE)
+	@$(PYTHONTARGET) -m pip install --index-url https://test.pypi.org/simple --no-deps $(PACKAGE)
 
 localwedit:
 ifeq ($(PLATFORM),linux)
-	@python -m pip install -e .
+	@$(PYTHONTARGET) -m pip install -e .
 else
 	@py -m pip install -e .
 endif
 
 local:
 ifeq ($(PLATFORM),linux)
-	@python -m pip install .
+	@$(PYTHONTARGET) -m pip install .
 else
 	@py -m pip install .
 endif
 
 clean:
 	@test -d dist && rm -fR dist || true
-	@test -d $(PACKAGE).egg-info && rm -fR $(PACKAGE).egg-info || true
+	@test -d $(EPACKAGE)*.egg-info && rm -fR $(EPACKAGE)*.egg-info || true
+
 install:
 ifeq ($(PLATFORM),linux)
-	python3 -m pip install $(PACKAGE)
+	$(PYTHONTARGET) -m pip install $(PACKAGE)
 else
 	py -m pip install $(PACKAGE)
 endif
 
 installreq: requirements.txt
 ifeq ($(PLATFORM),linux)
-	python3 -m pip install -r $(RECFILE)
+	$(PYTHONTARGET) -m pip install -r $(RECFILE)
 else
 
 endif
 
 installuser:
 ifeq ($(PLATFORM),linux)
-	python -m pip install --user $(PACKAGE)
+	$(PYTHONTARGET) -m pip install --user $(PACKAGE)
 else
 	py -m pip install --user $(PACKAGE)
 endif
 
 upgrade:
 ifeq ($(PLATFORM),linux)
-	python3 -m pip install --upgrade $(PACKAGE)
+	$(PYTHONTARGET) -m pip install --upgrade $(PACKAGE)
 else
 	py -m pip install --upgrade $(PACKAGE)
 endif
@@ -103,4 +106,5 @@ actions:
 	@printf "installuser\tInstall for current user only\n"
 	@printf "upgrade\t\tUpgrade the package\n"
 	@printf "cheatinstall\tDo the cheat cp /usr/lib thing\n"
+	@printf "cheatrm\tClean up cheatinstall code\n"
 	@printf "clean\t\tRemove build dist\n"
