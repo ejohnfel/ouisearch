@@ -130,3 +130,5 @@ dmypy.json
 
 # Flag file to ignore
 .prereqs
+
+verfix.py

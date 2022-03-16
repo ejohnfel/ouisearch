@@ -50,7 +50,7 @@ from py_helper import DownloadContent
 # still in the code. Also, IT CAN still be used as a plugin.
 #
 
-VERSION=(0,0,2)
+VERSION=(0,0,3)
 Version = __version__ = ".".join([ str(x) for x in VERSION ])
 
 # Plugins Name
