@@ -50,7 +50,7 @@ from py_helper import DownloadContent
 # still in the code. Also, IT CAN still be used as a plugin.
 #
 
-VERSION=(0,0,3)
+VERSION=(0,0,4)
 Version = __version__ = ".".join([ str(x) for x in VERSION ])
 
 # Plugins Name
@@ -104,8 +104,8 @@ __Args__ = None
 __Unknowns__ = None
 
 # Expressions and RegEx Objects
-MACExpr = "^([a-f\d]{2}[\:\-\s]{0,1}){6}$"
-OUIExpr = "^([a-f\d]{2}[\:\-\s]{0,1}){3}$"
+MACExpr = "^([a-fA-F\d]{2}[\:\-\s]{0,1}){6}$"
+OUIExpr = "^([a-fA-F\d]{2}[\:\-\s]{0,1}){3}$"
 
 MACAddress_re = re.compile(MACExpr)
 OUICode_re = re.compile(OUIExpr)
@@ -152,7 +152,7 @@ def GetCaches(storage_location=None,caches=None):
 	storage_location = storage_location if storage_location != None else StorageLocation
 
 	if not os.path.exists(storage_location):
-		os.makedirs(storage_location,mode=o777,exists_ok=True)
+		os.makedirs(storage_location,mode=0o777,exist_ok=True)
 
 	dl_files = list()
 
@@ -196,11 +196,15 @@ def Search(search_str):
 
 	if MACAddress_re.search(search_str):
 		# MACAddress
+		DbgMsg("MAC Address detected")
 		m = Strip(search_str)
 		code = m[0:6]
 	elif OUICode_re.search(search_str):
 		# OUI
+		DbgMsg("OUI Code detected")
 		code = Strip(search_str)
+
+	code = code.upper()
 
 	DbgMsg(f"{Name} : Beginning Search {search_str} / {code}")
 
@@ -213,7 +217,7 @@ def Search(search_str):
 			cache_list[3] = cache = LoadCache(cache_file)
 
 		for row in cache:
-			if code and code.upper() == row["Assignment"]:
+			if code and code == row["Assignment"]:
 				DbgMsg(f"Found row by {code}")
 				found.append(row)
 			elif code == None:
@@ -255,7 +259,9 @@ def ParseArgs(arguments=None):
 	__Unknowns__ = unknowns
 
 	# Check Debug Mode Flag
-	if args.debug: DebugMode(True)
+	if args.debug:
+		DebugMode(True)
+		DbgMsg("Debug Mode Enabled")
 
 	# Set Cache Location if supplied
 	if args.s: StorageLocation = args.s
@@ -293,7 +299,6 @@ def run(**kwargs):
 		args,unknowns = ParseArgs(arguments)
 	if not args:
 		args,unknowns = ParseArgs()
-
 
 	# Make sure the caches are available (or get them)
 	downloaded = GetCaches(StorageLocation,Caches)
