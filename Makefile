@@ -8,6 +8,9 @@ VENV=tests
 PLATFORM=linux
 RECFILE=requirements.txt
 
+BINHOME=/usr/local/bin
+TOOLNAME=oui
+
 .prereqs:
 	@python3 -m pip install --upgrade pip
 	@python3 -m pip install --upgrade testresources
@@ -42,6 +45,13 @@ cheatinstall:
 
 cheatrm:
 	@test -f $(CHEATTARGET)/$(CODE) && sudo cp $(SRC) $(CHEATTARGET)/$(CODE) || true
+
+installtool:
+	@sudo cp $(SRC) $(BINHOME)/$(TOOLNAME)
+	@sudo chmod +x $(BINHOME)/$(TOOLNAME)
+
+rmtool:
+	@sudo rm $(BINHOME)/$(TOOLNAME)
 
 install_test:
 	@$(PYTHONTARGET) -m pip install --index-url https://test.pypi.org/simple --no-deps $(PACKAGE)
@@ -107,4 +117,6 @@ actions:
 	@printf "upgrade\t\tUpgrade the package\n"
 	@printf "cheatinstall\tDo the cheat cp /usr/lib thing\n"
 	@printf "cheatrm\tClean up cheatinstall code\n"
+	@printf "installtool\tInstall script as a tool in $(BINHOME)\n"
+	@printf "rmtool\t\tRemove  script as tool in $(BINHOME)\n"
 	@printf "clean\t\tRemove build dist\n"
